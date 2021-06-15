@@ -23,10 +23,12 @@ namespace Rewind.Models
         /// <summary>
         /// Nome do utilizador
         /// </summary>
+        [Required]
         public string Utilizador { get; set; }
         /// <summary>
         /// Email do utilizador
         /// </summary>
+        [Required]
         public string Email { get; set; }
         /// <summary>
         /// Funciona como Chave Forasteira no relacionamento entre os utilizadores e a tabela de autenticação
