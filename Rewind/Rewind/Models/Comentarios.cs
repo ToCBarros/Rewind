@@ -26,7 +26,14 @@ namespace Rewind.Models
         [ForeignKey(nameof(Serie))]
         public int SeriesID { get; set; }
         public Series Serie { get; set; }
-
+        /// <summary>
+        /// Estado do comentario
+        /// </summary>
+        public bool estado { get;set; }
+        /// <summary>
+        /// Data de publicação do comentario
+        /// </summary>
+        public DateTime Data { get; set; }
         /// <summary>
         /// Comentario feito à serie por um utilizador
         /// </summary>

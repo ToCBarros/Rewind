@@ -23,9 +23,9 @@ namespace Rewind.Models
         [Key]
         public int ID { get; set; }
         /// <summary>
-        /// Nome da Serie
+        /// Titulo da Serie
         /// </summary>
-        public string Serie { get; set; }
+        public string Titulo { get; set; }
         /// <summary>
         /// Sinopse da série
         /// </summary>
@@ -46,6 +46,10 @@ namespace Rewind.Models
         /// Foto de capa de série
         /// </summary>
         public string Imagem { get; set; }
+        /// <summary>
+        /// Data de publicação da serie
+        /// </summary>
+        public DateTime Data { get; set; }
         /// <summary>
         /// FK do estudio
         /// </summary>

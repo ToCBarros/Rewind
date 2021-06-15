@@ -26,6 +26,10 @@ namespace Rewind.Models
         /// </summary>
         public string Estudio { get; set; }
         /// <summary>
+        /// Pais do estudio.
+        /// </summary>
+        public string Pais { get; set; }
+        /// <summary>
         /// lista das séries associados ao estudio
         /// </summary>
         public ICollection<Series> ListaDeSeries { get; set; }
