@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rewind.Data;
 
 namespace Rewind.Migrations
 {
     [DbContext(typeof(RewindDB))]
-    partial class RewindDBModelSnapshot : ModelSnapshot
+    [Migration("20210615223216_estadostring")]
+    partial class estadostring
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,11 +95,9 @@ namespace Rewind.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Estudio")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Pais")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
@@ -133,7 +133,6 @@ namespace Rewind.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Ano")
-                        .HasMaxLength(4)
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Data")
@@ -143,7 +142,6 @@ namespace Rewind.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Estado")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EstudioID")
@@ -153,11 +151,9 @@ namespace Rewind.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Sinopse")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Titulo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");

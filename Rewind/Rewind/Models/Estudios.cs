@@ -24,10 +24,12 @@ namespace Rewind.Models
         /// <summary>
         /// Nome do estudio
         /// </summary>
+        [Required]
         public string Estudio { get; set; }
         /// <summary>
         /// Pais do estudio.
         /// </summary>
+        [Required]
         public string Pais { get; set; }
         /// <summary>
         /// lista das séries associados ao estudio

@@ -25,22 +25,27 @@ namespace Rewind.Models
         /// <summary>
         /// Titulo da Serie
         /// </summary>
+        [Required]
         public string Titulo { get; set; }
         /// <summary>
         /// Sinopse da série
         /// </summary>
+        [Required]
         public string Sinopse { get; set; }
         /// <summary>
         /// Número de episódios
         /// </summary>
+        [Required]
         public int Episodios { get; set; }
         /// <summary>
         /// Estado da série, se está por acabar ou já acabou
         /// </summary>
+        [Required]
         public string Estado { get; set; }
         /// <summary>
         /// Ano em que a série foi publicada
         /// </summary>
+        [MaxLength(4, ErrorMessage = "O {0} não pode ter mais de {1} caracteres.")]
         public int Ano { get; set; }
         /// <summary>
         /// Foto de capa de série
@@ -54,6 +59,7 @@ namespace Rewind.Models
         /// FK do estudio
         /// </summary>
         [ForeignKey(nameof(Estudio))]
+        [Display(Name = "Estudio")]
         public int EstudioID { get; set; } // atributo para ser usado no SGBD e no C#. Representa a FK para o estudio
         public Estudios Estudio { get; set; } // atributo para ser usado no C#. Representa a FK para o estudio
 

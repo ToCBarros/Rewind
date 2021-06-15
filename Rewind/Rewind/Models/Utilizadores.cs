@@ -21,14 +21,18 @@ namespace Rewind.Models
         [Key]
         public int ID { get; set; }
         /// <summary>
-        /// Nome do utilizador
+        /// Nome de utilizador
         /// </summary>
-        [Required]
+        [Required(ErrorMessage ="Por favor dê um nome à sua conta.")]
+        [StringLength(20,ErrorMessage ="O nome da sua conta tem que ser inferior a {1} caracteres")]
+        [Display(Name ="Nome de utilizador")]
         public string Utilizador { get; set; }
         /// <summary>
         /// Email do utilizador
         /// </summary>
-        [Required]
+        [Required(ErrorMessage ="Por favor escreva o ser email.")]
+        [StringLength(50,ErrorMessage ="O {0} contem mais que {1} caracteres.")]
+        [EmailAddress(ErrorMessage ="O {0} introduzido não é válido.")]
         public string Email { get; set; }
         /// <summary>
         /// Funciona como Chave Forasteira no relacionamento entre os utilizadores e a tabela de autenticação

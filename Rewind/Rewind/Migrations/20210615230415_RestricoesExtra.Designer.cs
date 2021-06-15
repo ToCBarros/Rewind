@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rewind.Data;
 
 namespace Rewind.Migrations
 {
     [DbContext(typeof(RewindDB))]
-    partial class RewindDBModelSnapshot : ModelSnapshot
+    [Migration("20210615230415_RestricoesExtra")]
+    partial class RestricoesExtra
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

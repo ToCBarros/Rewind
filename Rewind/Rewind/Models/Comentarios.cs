@@ -18,18 +18,20 @@ namespace Rewind.Models
         /// FK do utilizador
         /// </summary>
         [ForeignKey(nameof(Utilizador))]
+        [Display(Name = "Utilizador")]
         public int UtilizadoresID { get; set; }
         public Utilizadores Utilizador { get; set; }
         /// <summary>
         /// FK da Serie
         /// </summary>
         [ForeignKey(nameof(Serie))]
+        [Display(Name = "Serie")]
         public int SeriesID { get; set; }
         public Series Serie { get; set; }
         /// <summary>
         /// Estado do comentario
         /// </summary>
-        public bool estado { get;set; }
+        public string Estado { get; set; }
         /// <summary>
         /// Data de publicação do comentario
         /// </summary>
@@ -41,6 +43,8 @@ namespace Rewind.Models
         /// <summary>
         /// Avaliação feita à serie por um utilizador
         /// </summary>
+        [Range(1,5)]
+        [Required(ErrorMessage ="Adicione uma classificação")]
         public int Estrelas { get; set; }
     }
 }
