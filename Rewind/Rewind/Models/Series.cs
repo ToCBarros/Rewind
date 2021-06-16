@@ -45,7 +45,7 @@ namespace Rewind.Models
         /// <summary>
         /// Ano em que a série foi publicada
         /// </summary>
-        [MaxLength(4, ErrorMessage = "O {0} não pode ter mais de {1} caracteres.")]
+        
         public int Ano { get; set; }
         /// <summary>
         /// Foto de capa de série

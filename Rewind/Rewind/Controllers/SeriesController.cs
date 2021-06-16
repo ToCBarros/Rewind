@@ -12,9 +12,6 @@ namespace Rewind.Controllers
 {
     public class SeriesController : Controller
     {
-        /// <summary>
-        /// representa a BD
-        /// </summary>
         private readonly RewindDB _context;
 
         public SeriesController(RewindDB context)
@@ -25,8 +22,7 @@ namespace Rewind.Controllers
         // GET: Series
         public async Task<IActionResult> Index()
         {
-            
-            var rewindDB =  _context.Series.Include(s => s.Estudio);
+            var rewindDB = _context.Series.Include(s => s.Estudio);
             return View(await rewindDB.ToListAsync());
         }
 
@@ -63,14 +59,28 @@ namespace Rewind.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Titulo,Sinopse,Episodios,Estado,Ano,Imagem,Data,EstudioID")] Series series)
         {
-            if (ModelState.IsValid)
+            //verificar se o utilizador escolheu um estudio
+            if (series.EstudioID > 0)
             {
-                _context.Add(series);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Add(series);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "Ocorreu um erro...");
+                    }
+                }
             }
-            ViewData["EstudioID"] = new SelectList(_context.Estudios, "ID", "Estudio", series.EstudioID);
-            return View(series);
+            
+                ModelState.AddModelError("", "Por favor escolha um estudio");
+                ViewData["EstudioID"] = new SelectList(_context.Estudios, "ID", "Estudio", series.EstudioID);
+                return View(series);
+            
         }
 
         // GET: Series/Edit/5

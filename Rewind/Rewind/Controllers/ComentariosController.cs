@@ -45,9 +45,9 @@ namespace Rewind.Controllers
 
             return View(comentarios);
         }
-
+        /*
         // GET: Comentarios/Create
-        /*public IActionResult Create()
+        public IActionResult Create()
         {
             ViewData["SeriesID"] = new SelectList(_context.Series, "ID", "Estado");
             ViewData["UtilizadoresID"] = new SelectList(_context.Utilizadores, "ID", "Email");
@@ -55,10 +55,14 @@ namespace Rewind.Controllers
         }
         */
         // GET: Comentarios/Create
+        
+        //é recebido o id da série
         public IActionResult Create(int id)
         {
+            
+            //Verifica-se qual é a serie a qual o id pertence
             var serie = _context.Series.FirstOrDefault(s => s.ID == id);
-            ViewData["SeriesID"] = serie.Titulo;
+            //são enviados o titulo e o id da série, para que possa ser preenchido automáticamente e caso se queira voltar a trás, vá para a série
             ViewData["id"] = id;
             ViewData["UtilizadoresID"] = new SelectList(_context.Utilizadores, "ID", "Email");
             return View();
@@ -71,11 +75,23 @@ namespace Rewind.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,UtilizadoresID,SeriesID,Estado,Data,Comentario,Estrelas")] Comentarios comentarios)
         {
+            comentarios.ID = 0;
+            comentarios.Estado = "visivel";
+            comentarios.Data = DateTime.Now;
             if (ModelState.IsValid)
             {
-                _context.Add(comentarios);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+
+                    _context.Add(comentarios);
+                    await _context.SaveChangesAsync();
+                    //return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Series");
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
             ViewData["SeriesID"] = new SelectList(_context.Series, "ID", "Estado", comentarios.SeriesID);
             ViewData["UtilizadoresID"] = new SelectList(_context.Utilizadores, "ID", "Email", comentarios.UtilizadoresID);
