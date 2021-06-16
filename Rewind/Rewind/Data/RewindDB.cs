@@ -41,9 +41,9 @@ namespace Rewind.Data
                 new Series { ID = 3, Titulo = "consectetur adipiscing elit", Sinopse = "Integer mattis lorem et lorem", Episodios=2, Estado="continuando", Ano=2012, Imagem="c.jpg", Data=new DateTime(2020, 5, 20), EstudioID=3 }
                 );
             modelBuilder.Entity<Comentarios>().HasData(
-                new Comentarios { ID = 1, UtilizadoresID = 1, SeriesID = 1, Estado="visivel", Data= new DateTime(2021, 6, 16), Comentario="bom" },
-                new Comentarios { ID = 2, UtilizadoresID = 2, SeriesID = 2, Estado="invisivel", Data = new DateTime(2021, 5, 4), Comentario="mau" },
-                new Comentarios { ID = 3, UtilizadoresID = 3, SeriesID = 3, Estado="visivel", Data = new DateTime(2020, 5, 21), Comentario="mais ou menos" }
+                new Comentarios { ID = 1, UtilizadoresID = 1, SeriesID = 1, Estado="visivel", Data= new DateTime(2021, 6, 16), Comentario="bom", Estrelas=5 },
+                new Comentarios { ID = 2, UtilizadoresID = 2, SeriesID = 2, Estado="invisivel", Data = new DateTime(2021, 5, 4), Comentario="mau", Estrelas=4},
+                new Comentarios { ID = 3, UtilizadoresID = 3, SeriesID = 3, Estado="visivel", Data = new DateTime(2020, 5, 21), Comentario="mais ou menos", Estrelas=3}
                 );
         }
 
