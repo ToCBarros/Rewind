@@ -30,14 +30,14 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var utilizadores = await _context.Utilizadores
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (utilizadores == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             return View(utilizadores);
@@ -70,13 +70,13 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var utilizadores = await _context.Utilizadores.FindAsync(id);
             if (utilizadores == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
             return View(utilizadores);
         }
@@ -90,7 +90,7 @@ namespace Rewind.Controllers
         {
             if (id != utilizadores.ID)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             if (ModelState.IsValid)
@@ -104,7 +104,7 @@ namespace Rewind.Controllers
                 {
                     if (!UtilizadoresExists(utilizadores.ID))
                     {
-                        return NotFound();
+                        return RedirectToAction("Index");
                     }
                     else
                     {
@@ -121,14 +121,14 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var utilizadores = await _context.Utilizadores
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (utilizadores == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             return View(utilizadores);

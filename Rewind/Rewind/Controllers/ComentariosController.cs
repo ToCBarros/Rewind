@@ -31,7 +31,7 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var comentarios = await _context.Comentarios
@@ -40,7 +40,7 @@ namespace Rewind.Controllers
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (comentarios == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             return View(comentarios);
@@ -103,13 +103,13 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var comentarios = await _context.Comentarios.FindAsync(id);
             if (comentarios == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
             ViewData["SeriesID"] = new SelectList(_context.Series, "ID", "Estado", comentarios.SeriesID);
             ViewData["UtilizadoresID"] = new SelectList(_context.Utilizadores, "ID", "Email", comentarios.UtilizadoresID);
@@ -125,7 +125,7 @@ namespace Rewind.Controllers
         {
             if (id != comentarios.ID)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             if (ModelState.IsValid)
@@ -139,7 +139,7 @@ namespace Rewind.Controllers
                 {
                     if (!ComentariosExists(comentarios.ID))
                     {
-                        return NotFound();
+                        return RedirectToAction("Index");
                     }
                     else
                     {
@@ -158,7 +158,7 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var comentarios = await _context.Comentarios
@@ -167,7 +167,7 @@ namespace Rewind.Controllers
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (comentarios == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             return View(comentarios);

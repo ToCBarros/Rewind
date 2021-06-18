@@ -23,6 +23,8 @@ namespace Rewind.Controllers
         /// caminho para os dados web no server
         /// </summary>
         private readonly IWebHostEnvironment _caminho;
+
+        String fotoApagar ="";
         public SeriesController(RewindDB context, IWebHostEnvironment caminho)
         {
             _context = context;
@@ -41,7 +43,7 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var series = await _context.Series
@@ -49,7 +51,7 @@ namespace Rewind.Controllers
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (series == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             return View(series);
@@ -144,16 +146,15 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var series = await _context.Series.FindAsync(id);
             if (series == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
             var foto =await _context.Series.FindAsync(id);
-            ViewData["foto"] = foto.Imagem;
             ViewData["EstudioID"] = new SelectList(_context.Estudios, "ID", "Estudio", series.EstudioID);
             return View(series);
         }
@@ -163,11 +164,11 @@ namespace Rewind.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Titulo,Sinopse,Episodios,Estado,Ano,Imagem,Data,EstudioID")] Series series, IFormFile imagemserie, string foto)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Titulo,Sinopse,Episodios,Estado,Ano,Imagem,Data,EstudioID")] Series series, IFormFile imagemserie)
         {
             if (id != series.ID)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
             
             string nomeImagem = "";
@@ -189,7 +190,9 @@ namespace Rewind.Controllers
                     //armazenamento da imagem
                     string localizacaoFicheiro = _caminho.WebRootPath;
                     nomeImagem = Path.Combine(localizacaoFicheiro, "fotos", nomeImagem);
-                    
+                    //Vai buscar a base de dados no nome da fotografia sem registar as entidades
+                    var foto = _context.Series.AsNoTracking().Where(p=>p.ID==series.ID).FirstOrDefault();
+                    System.IO.File.Delete(Path.Combine(localizacaoFicheiro, "fotos", foto.Imagem));
                 }
                 else
                 {
@@ -235,7 +238,7 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var series = await _context.Series
@@ -243,7 +246,7 @@ namespace Rewind.Controllers
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (series == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             return View(series);
@@ -255,8 +258,18 @@ namespace Rewind.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var series = await _context.Series.FindAsync(id);
-            _context.Series.Remove(series);
-            await _context.SaveChangesAsync();
+            try
+            {
+                //apagar a foto do disco rigido
+                string localizacaoFicheiro = _caminho.WebRootPath;
+                System.IO.File.Delete(Path.Combine(localizacaoFicheiro, "fotos", series.Imagem));
+                _context.Series.Remove(series);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
             return RedirectToAction(nameof(Index));
         }
 

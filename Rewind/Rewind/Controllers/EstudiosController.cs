@@ -30,14 +30,14 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var estudios = await _context.Estudios
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (estudios == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             return View(estudios);
@@ -70,13 +70,13 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var estudios = await _context.Estudios.FindAsync(id);
             if (estudios == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
             return View(estudios);
         }
@@ -90,7 +90,7 @@ namespace Rewind.Controllers
         {
             if (id != estudios.ID)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             if (ModelState.IsValid)
@@ -104,7 +104,7 @@ namespace Rewind.Controllers
                 {
                     if (!EstudiosExists(estudios.ID))
                     {
-                        return NotFound();
+                        return RedirectToAction("Index");
                     }
                     else
                     {
@@ -121,14 +121,14 @@ namespace Rewind.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             var estudios = await _context.Estudios
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (estudios == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
             return View(estudios);
