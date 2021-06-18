@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +15,18 @@ namespace Rewind.Controllers
 {
     public class SeriesController : Controller
     {
+        /// <summary>
+        /// representa a DB
+        /// </summary>
         private readonly RewindDB _context;
-
-        public SeriesController(RewindDB context)
+        /// <summary>
+        /// caminho para os dados web no server
+        /// </summary>
+        private readonly IWebHostEnvironment _caminho;
+        public SeriesController(RewindDB context, IWebHostEnvironment caminho)
         {
             _context = context;
+            _caminho = caminho;
         }
 
         // GET: Series
@@ -48,7 +58,7 @@ namespace Rewind.Controllers
         // GET: Series/Create
         public IActionResult Create()
         {
-            ViewData["EstudioID"] = new SelectList(_context.Estudios, "ID", "Estudio");
+            ViewData["EstudioID"] = new SelectList(_context.Estudios.OrderBy(e=>e.Estudio), "ID", "Estudio");
             return View();
         }
 
@@ -57,17 +67,64 @@ namespace Rewind.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Titulo,Sinopse,Episodios,Estado,Ano,Imagem,Data,EstudioID")] Series series)
+        public async Task<IActionResult> Create([Bind("ID,Titulo,Sinopse,Episodios,Estado,Ano,Imagem,Data,EstudioID")] Series series, IFormFile imagemserie)
         {
             //verificar se o utilizador escolheu um estudio
-            if (series.EstudioID > 0)
+            if (series.EstudioID < 0)
             {
+                ModelState.AddModelError("", "Por favor escolha um estudio");
+                ViewData["EstudioID"] = new SelectList(_context.Estudios, "ID", "Estudio", series.EstudioID);
+                return View(series);
+            }
+                //atribui o dia e a hora atual como dia de publicação.
+                series.Data = DateTime.Now;
+            string nomeImagem = "";
+            //verificar se recebeu ficheiro
+            if (imagemserie==null)
+            {
+                ModelState.AddModelError("", "Adicione uma fotografia da série.");
+                ViewData["EstudioID"] = new SelectList(_context.Estudios.OrderBy(e => e.Estudio), "ID", "Estudio");
+                return View(series);
+            }
+            else
+            {
+                if (imagemserie.ContentType == "image/jpeg" || imagemserie.ContentType == "image/png")
+                {
+                    
+                    Guid g;
+                    g = Guid.NewGuid();
+                    nomeImagem = series.Titulo+"_"+g.ToString();
+                    //extensão da imagem
+                    string extensao = Path.GetExtension(imagemserie.FileName).ToLower();
+                    //nome final do ficheiro
+                    nomeImagem = nomeImagem + extensao;
+
+                    //associar o nome da foto aos dados da BD
+                    series.Imagem = nomeImagem;
+
+                    //armazenamento da imagem
+                    string localizacaoFicheiro = _caminho.WebRootPath;
+                    nomeImagem = Path.Combine(localizacaoFicheiro, "fotos", nomeImagem);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Só pode escolher fotos");
+                    ViewData["EstudioID"] = new SelectList(_context.Estudios.OrderBy(e => e.Estudio), "ID", "Estudio");
+                    return View(series);
+                }
+            }
+            
                 if (ModelState.IsValid)
                 {
                     try
                     {
                         _context.Add(series);
                         await _context.SaveChangesAsync();
+
+                        //guardar no disco rigido do server a imagem
+                        using var stream = new FileStream(nomeImagem,FileMode.Create);
+                        await imagemserie.CopyToAsync(stream);
+
                         return RedirectToAction(nameof(Index));
                     }
                     catch (Exception ex)
@@ -75,9 +132,8 @@ namespace Rewind.Controllers
                         ModelState.AddModelError("", "Ocorreu um erro...");
                     }
                 }
-            }
             
-                ModelState.AddModelError("", "Por favor escolha um estudio");
+            
                 ViewData["EstudioID"] = new SelectList(_context.Estudios, "ID", "Estudio", series.EstudioID);
                 return View(series);
             
@@ -96,6 +152,8 @@ namespace Rewind.Controllers
             {
                 return NotFound();
             }
+            var foto =await _context.Series.FindAsync(id);
+            ViewData["foto"] = foto.Imagem;
             ViewData["EstudioID"] = new SelectList(_context.Estudios, "ID", "Estudio", series.EstudioID);
             return View(series);
         }
@@ -105,12 +163,43 @@ namespace Rewind.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Titulo,Sinopse,Episodios,Estado,Ano,Imagem,Data,EstudioID")] Series series)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Titulo,Sinopse,Episodios,Estado,Ano,Imagem,Data,EstudioID")] Series series, IFormFile imagemserie, string foto)
         {
             if (id != series.ID)
             {
                 return NotFound();
             }
+            
+            string nomeImagem = "";
+            if (imagemserie != null)
+            {
+                if (imagemserie.ContentType == "image/jpeg" || imagemserie.ContentType == "image/png")
+                {
+                    Guid g;
+                    g = Guid.NewGuid();
+                    nomeImagem = series.Titulo + "_" + g.ToString();
+                    //extensão da imagem
+                    string extensao = Path.GetExtension(imagemserie.FileName).ToLower();
+                    //nome final do ficheiro
+                    nomeImagem = nomeImagem + extensao;
+
+                    //associar o nome da foto aos dados da BD
+                    series.Imagem = nomeImagem;
+
+                    //armazenamento da imagem
+                    string localizacaoFicheiro = _caminho.WebRootPath;
+                    nomeImagem = Path.Combine(localizacaoFicheiro, "fotos", nomeImagem);
+                    
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Só pode escolher fotos");
+                    ViewData["EstudioID"] = new SelectList(_context.Estudios.OrderBy(e => e.Estudio), "ID", "Estudio");
+                    return View(series);
+                }
+            }
+
+            
 
             if (ModelState.IsValid)
             {
@@ -118,6 +207,11 @@ namespace Rewind.Controllers
                 {
                     _context.Update(series);
                     await _context.SaveChangesAsync();
+                    //guardar no disco rigido do server a imagem
+                    if (imagemserie != null) {
+                        using var stream = new FileStream(nomeImagem, FileMode.Create);
+                        await imagemserie.CopyToAsync(stream);
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
