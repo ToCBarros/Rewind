@@ -24,7 +24,6 @@ namespace Rewind.Controllers
         /// </summary>
         private readonly IWebHostEnvironment _caminho;
 
-        String fotoApagar ="";
         public SeriesController(RewindDB context, IWebHostEnvironment caminho)
         {
             _context = context;
@@ -154,8 +153,9 @@ namespace Rewind.Controllers
             {
                 return RedirectToAction("Index");
             }
-            var foto =await _context.Series.FindAsync(id);
             ViewData["EstudioID"] = new SelectList(_context.Estudios, "ID", "Estudio", series.EstudioID);
+            
+            HttpContext.Session.SetInt32("IDSerieEdicao",series.ID);
             return View(series);
         }
 
@@ -170,7 +170,14 @@ namespace Rewind.Controllers
             {
                 return RedirectToAction("Index");
             }
-            
+
+            var IDSerieEdit = HttpContext.Session.GetInt32("IDSerieEdicao");
+
+            if (IDSerieEdit == null || IDSerieEdit!=series.ID)
+            {
+                return RedirectToAction("Index");
+            }
+
             string nomeImagem = "";
             if (imagemserie != null)
             {

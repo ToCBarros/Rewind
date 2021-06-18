@@ -43,8 +43,9 @@ namespace Rewind.Models
         /// <summary>
         /// Avaliação feita à serie por um utilizador
         /// </summary>
-        [Range(1,5)]
+        [Range(1,5, ErrorMessage = "O valor das estrelas tem que ser entre {1} e {2}.")]
         [Required(ErrorMessage ="Adicione uma classificação")]
+        [Display(Name ="Estrelas entre 1 e 5")]
         public int Estrelas { get; set; }
     }
 }
