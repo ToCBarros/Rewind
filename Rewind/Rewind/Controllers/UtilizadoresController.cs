@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -78,6 +79,9 @@ namespace Rewind.Controllers
             {
                 return RedirectToAction("Index");
             }
+
+            HttpContext.Session.SetInt32("IDUtilizadorEdicao", utilizadores.ID);
+
             return View(utilizadores);
         }
 
@@ -89,6 +93,13 @@ namespace Rewind.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("ID,Utilizador,Email,UserName")] Utilizadores utilizadores)
         {
             if (id != utilizadores.ID)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var IDUtilizadorEdit = HttpContext.Session.GetInt32("IDUtilizadorEdicao");
+
+            if (IDUtilizadorEdit == null || IDUtilizadorEdit != utilizadores.ID)
             {
                 return RedirectToAction("Index");
             }
@@ -130,7 +141,7 @@ namespace Rewind.Controllers
             {
                 return RedirectToAction("Index");
             }
-
+            HttpContext.Session.SetInt32("IDUtilizadoresDelete", utilizadores.ID);
             return View(utilizadores);
         }
 
@@ -140,6 +151,12 @@ namespace Rewind.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var utilizadores = await _context.Utilizadores.FindAsync(id);
+            var IDUtilizadoresDel = HttpContext.Session.GetInt32("IDUtilizadoresDelete");
+
+            if (IDUtilizadoresDel == null || IDUtilizadoresDel != utilizadores.ID)
+            {
+                return RedirectToAction("Index");
+            }
             _context.Utilizadores.Remove(utilizadores);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

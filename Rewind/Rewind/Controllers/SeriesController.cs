@@ -255,6 +255,7 @@ namespace Rewind.Controllers
             {
                 return RedirectToAction("Index");
             }
+            HttpContext.Session.SetInt32("IDSerieDelete", series.ID);
 
             return View(series);
         }
@@ -265,6 +266,12 @@ namespace Rewind.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var series = await _context.Series.FindAsync(id);
+            var IDSerieDel = HttpContext.Session.GetInt32("IDSerieDelete");
+
+            if (IDSerieDel == null || IDSerieDel != series.ID)
+            {
+                return RedirectToAction("Index");
+            }
             try
             {
                 //apagar a foto do disco rigido

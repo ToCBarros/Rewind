@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,7 @@ namespace Rewind.Controllers
             {
                 return RedirectToAction("Index");
             }
-
+            
             return View(estudios);
         }
 
@@ -78,6 +79,7 @@ namespace Rewind.Controllers
             {
                 return RedirectToAction("Index");
             }
+            HttpContext.Session.SetInt32("IDEstudiosEdicao", estudios.ID);
             return View(estudios);
         }
 
@@ -89,6 +91,12 @@ namespace Rewind.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("ID,Estudio,Pais")] Estudios estudios)
         {
             if (id != estudios.ID)
+            {
+                return RedirectToAction("Index");
+            }
+            var IDEstudiosEdit = HttpContext.Session.GetInt32("IDEstudiosEdicao");
+
+            if (IDEstudiosEdit == null || IDEstudiosEdit != estudios.ID)
             {
                 return RedirectToAction("Index");
             }
@@ -130,7 +138,7 @@ namespace Rewind.Controllers
             {
                 return RedirectToAction("Index");
             }
-
+            HttpContext.Session.SetInt32("IDEstudiosDelete", estudios.ID);
             return View(estudios);
         }
 
@@ -140,6 +148,12 @@ namespace Rewind.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var estudios = await _context.Estudios.FindAsync(id);
+            var IDEstudiosDel = HttpContext.Session.GetInt32("IDEstudiosDelete");
+
+            if (IDEstudiosDel == null || IDEstudiosDel != estudios.ID)
+            {
+                return RedirectToAction("Index");
+            }
             _context.Estudios.Remove(estudios);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

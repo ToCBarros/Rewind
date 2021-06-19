@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -113,6 +114,7 @@ namespace Rewind.Controllers
             }
             ViewData["SeriesID"] = new SelectList(_context.Series, "ID", "Estado", comentarios.SeriesID);
             ViewData["UtilizadoresID"] = new SelectList(_context.Utilizadores, "ID", "Email", comentarios.UtilizadoresID);
+            HttpContext.Session.SetInt32("IDComentariosEdicao", comentarios.ID);
             return View(comentarios);
         }
 
@@ -127,7 +129,12 @@ namespace Rewind.Controllers
             {
                 return RedirectToAction("Index");
             }
+            var IDComentariosEdit = HttpContext.Session.GetInt32("IDComentariosEdicao");
 
+            if (IDComentariosEdit == null || IDComentariosEdit != comentarios.ID)
+            {
+                return RedirectToAction("Index");
+            }
             if (ModelState.IsValid)
             {
                 try
@@ -169,7 +176,7 @@ namespace Rewind.Controllers
             {
                 return RedirectToAction("Index");
             }
-
+            HttpContext.Session.SetInt32("IDComentariosDelete", comentarios.ID);
             return View(comentarios);
         }
 
@@ -179,6 +186,12 @@ namespace Rewind.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var comentarios = await _context.Comentarios.FindAsync(id);
+            var IDComentariosDel = HttpContext.Session.GetInt32("IDComentariosDelete");
+
+            if (IDComentariosDel == null || IDComentariosDel != comentarios.ID)
+            {
+                return RedirectToAction("Index");
+            }
             _context.Comentarios.Remove(comentarios);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
